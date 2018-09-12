@@ -98,3 +98,9 @@ plt.axis([-0.2,1.2,0,plt.axis()[3]])
 plt.title('Gaussian Bases for the Manifold')
 plt.legend()
 plt.show()
+
+
+
+
+
+
