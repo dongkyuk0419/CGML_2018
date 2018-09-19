@@ -19,13 +19,14 @@ layers = [2,40,50,40,1] # This is my neural network set up
 spiral_difficulty = 3 # This controls how many times the spiral goes around
 sd = spiral_difficulty*2 # I don't have to write spiral_difficulty*2 everytime.
 
-'''
-Layers = [2,30,1]: After 100000 iterations at lr = 0.5, lambda = 0.00001, it has 0.089 loss for spiral_difficulty =2
-This layer was too slow to converge, and wasn't too correct. So I changed my layer to [2,30,30,1].
-I increased the spiral difficulty from 2 to 3. Then my second layer option wasn't sufficient enough.
-So I increased both hidden layer and number of nodes, and now it learns the spiral_difficulty = 3 well.
-I actually had a minor difficulty of having too few samples, so my boundaries weren't as pretty as I wanted, so I increased the sample size as well.
-'''
+# Layers = [2,30,1] # After 100000 iterations at lr = 0.5, lambda = 0.00001, it has 0.089 loss.
+# The current layer with two hidden layers learns the spiral with a smaller loss.
+# Note that now the final loss is bigger because I added more noise. The noise before was 0.05,
+# and also I increased the spiral difficulty from 2 to 3.
+# Then my second layer option of [2, 30, 30, 1] wasn't sufficient enough.
+# So I increased both hidden layer and number of nodes, and now it learns the spiral_difficulty = 3 well.
+# I actually had a minor difficulty of having too few samples, so my boundaries weren't as pretty as I wanted,
+# so I increased the sample size as well.
 
 # Data Generation
 class Data(object):
@@ -57,9 +58,9 @@ class My_Model(object):
             tf.add_to_collection('l2_norm', tf.reduce_sum(tf.square(self.w[i])))            
             self.b[i] = tf.get_variable('b'+str(i),[self.layers[i+1],1],tf.float32,tf.random_normal_initializer())
             tf.add_to_collection('l2_norm', tf.reduce_sum(tf.square(self.b[i])))
-        # first layer
+            # first layer
         self.y_hat = tf.sigmoid(tf.add(tf.matmul(self.x,self.w[0]),tf.transpose(self.b[0])))
-        # subsequent layers
+            # subsequent layers
         for i in range(1,len(self.layers)-1):
             self.y_temp = tf.add(tf.matmul(self.y_hat,self.w[i]),tf.transpose(self.b[i]))
             self.y_hat = tf.sigmoid(self.y_temp)
