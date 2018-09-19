@@ -5,22 +5,21 @@
 # library imports
 import numpy as np
 import tensorflow as tf
+from matplotlib import rc
 import matplotlib.pyplot as plt
 from tqdm import tqdm
 
 # hyper parameters
-iteration = 1000
-learning_rate = 0.02
-lambdah = 0.0001 # regularization constant
-display = 100
-sigma_noise = 0.1
-
-
+iteration = 100000
+learning_rate = 0.35
+lambda_ = 0.0001 # regularization constant
+display = 1000
+sigma_noise = 0.15
 samples = 1000
-percent_train = 0.75
-N_train = samples*percent_train
-N_test = samples-N_train
-layers = [2,20,20,1]
+layers = [2,30,30,1] # This is my neural network set up
+
+# Layers = [2,30,1] # After 100000 iterations at lr = 0.5, lambda = 0.00001, it has 0.089 loss.
+# The current layer with two hidden layers learns the spiral with a smaller loss.
 
 # Data Generation
 class Data(object):
@@ -28,106 +27,101 @@ class Data(object):
         np.random.seed(31415)
         temp = np.random.uniform(0,4*np.pi,size=(N,1))
         self.label = np.random.randint(2,size=(N,1))
-        self.x1 = temp*np.cos(temp+label*np.pi)+sigma_noise*np.random.normal(size=(N,1))
-        self.x2 = temp*np.sin(temp+label*np.pi)+sigma_noise*np.random.normal(size=(N,1))
+        self.x1 = temp*np.cos(temp+self.label*np.pi)+sigma_noise*np.random.normal(size=(N,1))
+        self.x2 = temp*np.sin(temp+self.label*np.pi)+sigma_noise*np.random.normal(size=(N,1))
         self.N = N
 # Model
 class My_Model(object):
-    def __init__(self,sess,data,layers,learning_rate,iteration,lambdah):
+    def __init__(self,sess,data,layers,learning_rate,iteration,lambda_):
         self.sess = sess
         self.data = data
         self.layers = layers
         self.learning_rate = learning_rate
         self.iteration = iteration
-        self.lambdah = lambdah
+        self.lambda_ = lambda_
         self.build_model()
 
     def build_model(self):
-        self.x = tf.placeholder(tf.float32,[self.data.N,2])
-        self.y = tf.placeholder(tf.float32,[self.data.N,1])
+        self.x = tf.placeholder(tf.float32,[None,2])
+        self.y = tf.placeholder(tf.float32,[None,1])
         self.w = {}
         self.b = {}
         for i in range(0,len(self.layers)-1):
-            self.w[i] = tf.get_variable('w'+i,[layer[i],layer[i+1]],tf.float32,tf.random_normal_initializer())
-            self.b[i] = tf.get_variable('b'+i,[layer[i+1],1],tf.float32,tf.zeros_initializer())
-        # first layer
-        self.y_hat = tf.nn.relu(tf.add(tf.matmul(self.x,self.w[0]),self.b[0]))
+            self.w[i] = tf.get_variable('w'+str(i),[self.layers[i],self.layers[i+1]],tf.float32,tf.random_normal_initializer())
+            tf.add_to_collection('model_var', self.w[i])
+            tf.add_to_collection('l2', tf.reduce_sum(tf.square(self.w[i])))            
+            self.b[i] = tf.get_variable('b'+str(i),[self.layers[i+1],1],tf.float32,tf.random_normal_initializer())
+            tf.add_to_collection('model_var', self.b[i])
+            tf.add_to_collection('l2', tf.reduce_sum(tf.square(self.b[i])))
+            # first layer
+        self.y_hat = tf.sigmoid(tf.add(tf.matmul(self.x,self.w[0]),tf.transpose(self.b[0])))
+            # subsequent layers
         for i in range(1,len(self.layers)-1):
-            self.y_hat = tf.nn.relu(tf.add(tf.matmul(self.y_hat,self.w[i]),self.b[i]))
+            self.y_temp = tf.add(tf.matmul(self.y_hat,self.w[i]),tf.transpose(self.b[i]))
+            self.y_hat = tf.sigmoid(self.y_temp)
+        self.costs = tf.reduce_mean(tf.nn.sigmoid_cross_entropy_with_logits(logits=self.y_temp,labels=self.y))
+        self.l2 = tf.reduce_sum(tf.get_collection('l2'))
 
-# tensor definition
-x = tf.placeholder(tf.float32, [N,1])
-y = tf.placeholder(tf.float32, [N,1])
-y_hat = f(x)
-loss = tf.reduce_mean(tf.pow(y_hat - y, 2))
-optim = tf.train.GradientDescentOptimizer(learning_rate).minimize(loss)
-init = tf.global_variables_initializer()
+#           The Below Code is when I tried to use Relu and come up with my own cross entropy function. It didn't work.
+#        self.y_clipped = clip_values(self.y_hat)
+#        self.cross_entropy = cross_entropy(self.y,self.y_clipped)
+#        self.l2 = tf.nn.l2_loss(self.w[0])
+#        for i in range(1,len(self.layers)-1):
+#            self.l2 = tf.nn.l2_loss(self.w[i])
 
-# session run
+        self.loss = self.costs+self.l2*self.lambda_
+    
+    def train_init(self):
+        self.optim = tf.train.GradientDescentOptimizer(self.learning_rate).minimize(self.loss)
+        self.init = tf.global_variables_initializer()
+        self.sess.run(self.init)
+
+    def train(self):
+        for k in tqdm(range(0,self.iteration)):
+            w,loss,optim = self.sess.run([self.w,self.loss,self.optim], feed_dict={self.x: np.concatenate((self.data.x1,self.data.x2),axis = 1),self.y:self.data.label})
+            if k % display == 0:
+                print('The Current Loss at '+str(k)+'th iteration is '+str(loss))
+    
+    def predict(self,x_new):
+        temp = self.sess.run(self.y_hat,feed_dict={self.x:x_new})
+        return temp > 0.5
+
+# Session Run
 sess = tf.Session()
-sess.run(init)
-data = Data()
-for _ in tqdm(range(0, iteration)):
-    sess.run([loss, optim], feed_dict={x: data.x, y: data.y})
+data =Data(samples)
+model = My_Model(sess,data,layers,learning_rate,iteration,lambda_)
+model.train_init()
+model.train()
 
-# results
-print("Parameter estimates:")
-storage = []
-for var in tf.get_collection(tf.GraphKeys.TRAINABLE_VARIABLES):
-    print(
-        var.name.rstrip(":0"),
-        np.array_str(np.array(sess.run(var)).flatten(), precision=3))
-    storage.append(sess.run(var))
-[w_model,mu_model,sigma_model,b_model] = storage
+# Predicting
+N_plot = 500
+xGrid = np.linspace(-4*np.pi,4*np.pi,N_plot,dtype=np.float32)
+yGrid = xGrid
+'''
+# The code below is too slow.
+LGrid = np.zeros([N_plot,N_plot])
+for i in tqdm(range(N_plot)):
+    for ii in range(N_plot):
+        x_new = [xGrid[ii],yGrid[i]]
+        LGrid[i,ii] = model.predict(np.reshape(x_new,[1,2]))
+np.concatenate((np.expand_dims(xGrid,1),np.expand_dims(yGrid,1)),1)
+'''
+x_plot,y_plot = np.meshgrid(xGrid,yGrid)
+XX = np.reshape(x_plot,(-1,1))
+YY = np.reshape(y_plot,(-1,1))
+test = np.concatenate((XX,YY),1)
+LGrid = model.predict(test)
 
-# Useful Functions
-def gaussian_model(x,w,mu,sigma,b):
-    phi = tf.exp(-(tf.transpose(x)-mu)**2/sigma**2)
-    return tf.transpose(tf.matmul(tf.transpose(w),phi)+b)
-
-def f(x):
-    w = tf.get_variable('w',[M,1],tf.float32,tf.random_normal_initializer())
-    mu = tf.get_variable('mu',[M,1],tf.float32,tf.random_uniform_initializer())
-        # as x is drawn from uniform(0,1) it makes sense that mu is in the
-        # range as well
-    sigma = tf.get_variable('sigma',[M,1],tf.float32,tf.random_normal_initializer(),constraint=lambda x:tf.abs(x))
-        # since technically sigma should be positive, sigma is forced to be.
-    b = tf.get_variable('b',[],tf.float32,tf.zeros_initializer())
-    return gaussian_model(x,w,mu,sigma,b)
-
-def norm_dist(x,mu,sigma):
-    return 1/(sigma*np.sqrt(2*np.pi))*np.exp(-(x-mu)**2/(2*sigma**2))
-
-#plotting
-x_plot = np.linspace(-0.2,1.2,300,dtype=np.float32)
-y_truth = np.sin(2*np.pi*x_plot)
-y_model = gaussian_model(x_plot,w_model,mu_model,sigma_model,b_model)
-
-    #plot 1
-plt.figure(1)
-plt.subplot()
-plt.plot(x_plot,y_truth,'b',label='noiseless sine')
-plt.plot(x_plot,sess.run(y_model),'--r',label='model')
-plt.plot(data.x,data.y,'go',label='data points')
-plt.xlabel('x')
-plt.xticks(np.arange(0,1.2,step=0.5))
-plt.ylabel('y')
-plt.axis([0,1,-1.2,1.2])
-plt.title('Linear Regression of a Noisy Sinewave using Gaussian Basis Function')
-plt.legend()
-plt.show()
-
-    #plot 2
-plt.figure(2)
-plt.subplot()
-for i in range(1,M+1):
-    plt.plot(x_plot,norm_dist(x_plot,mu_model[i-1],sigma_model[i-1]),
-        label='Basis '+str(i)+': mu ='+str(mu_model[i-1])[1:6]+',sigma ='
-        +str(sigma_model[i-1])[1:6])
-plt.xlabel('x')
-plt.xticks(np.arange(0,1.2,step=0.5))
-plt.ylabel('y')
-plt.axis([-0.2,1.2,0,plt.axis()[3]])
-plt.title('Gaussian Bases for the Manifold')
+# Plotting
+plt.figure(figsize=(8,6))
+plt.contourf(x_plot,y_plot,np.reshape(LGrid,(N_plot,N_plot)))
+plt.plot(data.x1[data.label==0],data.x2[data.label==0],'.r',label='Class0')
+plt.plot(data.x1[data.label==1],data.x2[data.label==1],'.b',label='Class1')
+txt="sigma noise = 0.15, Each background color represents each class"
+plt.figtext(0.5, 0.01, txt, wrap=True, horizontalalignment='center', fontsize=12)
+plt.xlabel('x1')
+plt.ylabel('x2')
+plt.axis([-4*np.pi,4*np.pi,-4*np.pi,4*np.pi])
+plt.title('Spiral Learning')
 plt.legend()
 plt.show()
