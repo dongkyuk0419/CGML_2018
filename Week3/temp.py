@@ -1,4 +1,4 @@
-
+X
 # Model
 class My_Model(object):
     def __init__(self,sess,data,layers,learning_rate,iteration,lambda_):
@@ -43,6 +43,7 @@ class My_Model(object):
     
     def predict(self,x_new):
         temp = self.sess.run(self.y_hat,feed_dict={self.x:x_new})
+        
         return temp > 0.5
 
 # Session Run
