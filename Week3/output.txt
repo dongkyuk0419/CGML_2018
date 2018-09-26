@@ -1,0 +1,18 @@
+Output for DongKyu Kim's 3rd Assignment
+Training Starts
+The Current Loss at 100th iteration is 0.30712897
+The Current Loss at 200th iteration is 0.049576998
+The Current Loss at 300th iteration is 0.07079946
+The Current Loss at 400th iteration is 0.073212914
+The Current Loss at 500th iteration is 0.018554091
+The Current Loss at 600th iteration is 0.107697524
+The Current Loss at 700th iteration is 0.064079314
+The Current Loss at 800th iteration is 0.12463989
+The Current Loss at 900th iteration is 0.03640077
+The Current Loss at 1000th iteration is 0.029710766
+Training Completed
+Validation Starts
+Validation Accuracy:  98.57000106573105 %
+Test Starts
+Test Accuracy:  98.7600005865097 %
+bye bye

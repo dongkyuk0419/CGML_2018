@@ -9,17 +9,19 @@ import matplotlib.pyplot as plt
 from tqdm import tqdm
 from keras.datasets import mnist
 
-# hyper parameters
+# Parameters
 N = 50000 # Number of training images this means 10000 of 60000 will be used for validation
-learning_rate = 0.001
-filter_size = [32,64]
-kernel_size = [5,5]
-lambda_ = 0.0001 # regularization constant
-dropout = 0.5
 batch_size = 64
-iterations = 100
-display = 10
+iterations = 1000
+display = 100
 numclass = 10
+
+# hyper parameters
+learning_rate = 5e-4
+filter_size = [64,64]
+kernel_size = [3,3]
+lambda_ = 1e-5 # regularization constant
+dropout = 0.6
 
 def one_hot_encoding(data,numclass):
     targets = np.array(data).reshape(-1)
@@ -80,7 +82,7 @@ class My_Model(object):
         self.yhat = self.conv_setup(self.yhat,self.filter_size[1])
         self.yhat = self.mp_setup(self.yhat)
         # now the output is [7,7]
-        self.yhat = tf.reshape(self.yhat,[-1,7*7*64])
+        self.yhat = tf.reshape(self.yhat,[-1,7*7*self.filter_size[1]])
         self.yhat = tf.layers.dense(inputs = self.yhat, units = 1024, activation = tf.nn.relu,kernel_regularizer = self.regularizer)
         self.yhat = tf.layers.dropout(self.yhat,self.dropout)
         self.yhat = tf.layers.dense(inputs=self.yhat, units=self.data.numclass,kernel_regularizer = self.regularizer)
@@ -88,28 +90,45 @@ class My_Model(object):
         self.loss = self.costs + tf.losses.get_regularization_loss()
 
     def train(self):
-        self.optim = tf.train.GradientDescentOptimizer(self.learning_rate).minimize(self.loss)
+        self.optim = tf.train.AdamOptimizer(self.learning_rate).minimize(self.loss)
         self.init = tf.global_variables_initializer()
         self.sess.run(self.init)
+        print('Output for DongKyu Kim\'s 3rd Assignment')
+        print('Training Starts')
         for k in tqdm(range(0,self.iterations)):
             batch_x, batch_y = self.data.get_batch(self.batch_size)
             self.sess.run([self.optim],feed_dict={self.x:batch_x,self.y:batch_y,self.dropout:dropout})
-            if k % self.display == 0:
+            if k % self.display == 99:
                 loss = self.sess.run(self.loss,feed_dict={self.x:batch_x,self.y:batch_y,self.dropout:1.0})
-                print('The Current Loss at '+str(k)+'th iteration is '+str(loss))                
+                print('The Current Loss at '+str(k+1)+'th iteration is '+str(loss))                
         print('Training Completed')
         self.validation_()
 
     def validation_(self):
-        temp = self.sess.run(self.yhat,feed_dict={self.x:self.data.X_val,self.y:self.data.Y_val,self.dropout:1.0})
-        correct = tf.equal(tf.argmax(temp,1),tf.argmax(self.data.Y_val,1))
-        accuracy = tf.reduce_mean(tf.cast(correct,tf.float32))
-        print("Validation Accuracy: "+str(accuracy)+'%')
+        print('Validation Starts')
+        self.correct = tf.equal(tf.argmax(self.yhat,1),tf.argmax(self.y,1))
+        self.accuracy = tf.reduce_mean(tf.cast(self.correct,tf.float32))
+        accuracy = 0
+        for k in tqdm(range(0,100)):
+            temp = self.sess.run(self.accuracy,feed_dict={self.x:self.data.X_val[k*100:(k+1)*100],self.y:self.data.Y_val[k*100:(k+1)*100],self.dropout:1.0})
+            accuracy += temp
+        print("Validation Accuracy: ",accuracy,'%')
+
+    def test(self):
+        print('Test Starts')
+        self.correct = tf.equal(tf.argmax(self.yhat,1),tf.argmax(self.y,1))
+        self.accuracy = tf.reduce_mean(tf.cast(self.correct,tf.float32))
+        accuracy = 0
+        for k in tqdm(range(0,100)):
+            temp = self.sess.run(self.accuracy,feed_dict={self.x:self.data.X_test[k*100:(k+1)*100],self.y:self.data.Y_test[k*100:(k+1)*100],self.dropout:1.0})
+            accuracy += temp
+        print("Test Accuracy: ",accuracy,'%\nbye bye')
 
 # Test Run
 data = Data(N,numclass)
 sess_test = tf.Session()
-model_test = My_Model(sess_test,data,learning_rate,filter_size,kernel_size,lambda_,dropout,batch_size,iterations,display)
-model_test.train()
+model = My_Model(sess_test,data,learning_rate,filter_size,kernel_size,lambda_,dropout,batch_size,iterations,display)
+model.train()
 
-#print(data.train_index)
+# Final
+model.test()
