@@ -12,7 +12,7 @@ from keras.datasets import mnist
 # Parameters
 N = 50000 # Number of training images this means 10000 of 60000 will be used for validation
 batch_size = 64
-iterations = 1000
+iterations = 20
 display = 100
 numclass = 10
 
