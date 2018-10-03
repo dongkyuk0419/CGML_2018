@@ -159,4 +159,4 @@ print('Test accuracy:',scores[1])
 # I added another branch in residual network. This idea was motivated by https://arxiv.org/pdf/1705.07485.pdf (Shake-Shake regularization)
 # I increased the learning rate from 0.005 to 0.007 because new model was slow. However, this converges to 0.76. I realized my method is just not working out.
 # I heard from someone (joey) that all conv layer works fine, and it does work greatly with only 8 total layers. (I was disappointed), it goes to 0.8214
-# I realized it learns slowly, so I added adaptive learning rate, and added another conv_block.
+# I realized it learns slowly, so I added adaptive learning rate, and added another conv_block. I end up with 90.29% Accuracy.
