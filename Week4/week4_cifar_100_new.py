@@ -136,7 +136,7 @@ class My_Model(object):
             callbacks=[LearningRateScheduler(lr_adaptive)],verbose=2)
 #       self.model.fit(self.data.X_train,self.data.Y_train,self.batch_size,self.epochs,validation_data = (self.data.X_val,self.data.Y_val),shuffle=True)
 
-print('This is my cifar_10 case')
+print('This is my cifar_100 case')
 data = Data(r,numclass)
 My_Model = My_Model(data,batch_size,epochs)
 My_Model.build_model()
