@@ -72,22 +72,6 @@ class My_Model(object):
     def convconv(self,filters,kernel_size,strides):
         return Conv2D(filters,kernel_size,strides =strides,padding='same',activation='relu')
 
-    def residual_block(self,input,filter): #This is from https://arxiv.org/pdf/1603.05027.pdf Identity Mappings in Deep Residual Networks
-        x = BatchNormalization()(input)
-        x = Activation('relu')(x)
-        x = self.convconv(filter,[3,3],1)(x)
-        x = BatchNormalization()(input)
-        x = Activation('relu')(x)
-        x = self.convconv(filter,[3,3],1)(x)
-
-        y = BatchNormalization()(input)
-        y = Activation('relu')(y)
-        y = self.convconv(filter,[3,3],1)(y)
-        y = BatchNormalization()(y)
-        y = Activation('relu')(y)
-        y = self.convconv(filter,[3,3],1)(y)
-        return keras.layers.add([input,x,y])
-
     def all_conv_block(self,filters,dropout,input):
         x = self.convconv(filters,[3,3],1)(input)
         x = BatchNormalization()(x)
@@ -103,27 +87,13 @@ class My_Model(object):
         x = self.all_conv_block(64,0.35,x)
         x = self.all_conv_block(128,0.45,x)
         x = self.all_conv_block(256,0.35,x)
-#        x = self.convconv(64,[7,7],2)(input)
-#        x = MaxPooling2D(3,strides = 2)(x)
-#        for i in range(0,2):
-#            x = self.residual_block(x,64)
-#        x = self.convconv(128,[3,3],2)(x)
-#        for i in range(0,2):
-#            x = self.residual_block(x,128)
-#        x = self.convconv(256,[3,3],2)(x)
-#        for i in range(0,4):
-#            x = self.residual_block(x,256)        
-#        x = self.convconv(512,[3,3],2)(x)
-#        for i in range(0,2):
-#            x = self.residual_block(x,512)
-#        x = keras.layers.GlobalAveragePooling2D()(x)
         x = Flatten()(x)
         x = Dense(1024,activation = 'relu')(x)
         y = Dense(self.data.numclass,activation='softmax')(x)
         self.model = Model(inputs = input, outputs = y)
 
     def train(self):
-#        self.optim = optimizers.SGD(learning_rate,momentum=0.9,decay=5e-4)
+
         self.optim = optimizers.Adam(learning_rate)
         self.model.compile(self.optim,'categorical_crossentropy',['accuracy','top_k_categorical_accuracy'])
         self.datagen = keras.preprocessing.image.ImageDataGenerator(
@@ -134,7 +104,7 @@ class My_Model(object):
         self.model.fit_generator(self.datagen.flow(self.data.X_train, self.data.Y_train,batch_size=self.batch_size),
             steps_per_epoch=len(self.data.X_train)/self.batch_size,epochs=self.epochs,validation_data = (self.data.X_val,self.data.Y_val),
             callbacks=[LearningRateScheduler(lr_adaptive)],verbose=2)
-#       self.model.fit(self.data.X_train,self.data.Y_train,self.batch_size,self.epochs,validation_data = (self.data.X_val,self.data.Y_val),shuffle=True)
+
 
 print('This is my cifar_100 case')
 data = Data(r,numclass)
