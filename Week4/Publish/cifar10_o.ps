@@ -1,12 +1,12 @@
 %!PS-Adobe-3.0
-%%Title: week4_cifar_10.py
+%%Title: out_fin_modified.txt
 %%For: dongkyu kim
 %%Creator: a2ps version 4.14
-%%CreationDate: Wed Oct  3 14:15:56 2018
+%%CreationDate: Wed Oct  3 21:28:39 2018
 %%BoundingBox: 24 24 588 768
 %%DocumentData: Clean7Bit
 %%Orientation: Portrait
-%%Pages: 3
+%%Pages: 1
 %%PageOrder: Ascend
 %%DocumentMedia: Letter 612 792 0 () ()
 %%DocumentNeededResources: font Courier
@@ -754,325 +754,53 @@ llx lly 0 add translate
 /x0 x v get 4.850123 add sx cw mul add store
 /y0 y v get bfs  sub store
 x0 y0 moveto
-(# DongKyu Kim) c n
-(# ECE 471 CGML Assignment 4) N
-(# CIFAR-10) N
-(# Professor Curro) N
-() p n
-(# library imports) c n
-(import) K
-( numpy as np) p n
-(from) K
-( tqdm ) p
-(import) K
-( tqdm) p n
-(import) K
-( keras) p n
-(import) K
-( tensorflow as tf) p n
-(from) K
-( keras ) p
-(import) K
-( optimizers, regularizers) p n
-(from) K
-( keras.datasets ) p
-(import) K
-( cifar10) p n
-(from) K
-( keras.models ) p
-(import) K
-( Model) p n
-(from) K
-( keras.layers ) p
-(import) K
-( Dense, Dropout, Flatten, Conv2D, MaxPooling2D, BatchNor) p n
-(malization, Activation, Input) N
-(from) K
-( keras.callbacks ) p
-(import) K
-( LearningRateScheduler) p n
-() N
-(# Parameters) c n
-(r = 0.9 ) p
-(# Ratio of training data otu of training + validation) c n
-(batch_size = 128) p n
-(epochs = 200) N
-(numclass = 10) N
-(learning_rate = 0.005) N
-() N
-(# Useful functions) c n
-(def) K
-( one_hot_encoding\(data,numclass\):) p n
-(    targets = np.array\(data\).reshape\(-1\)) N
-(    ) S
-(return) K
-( np.eye\(numclass\)[targets]) p n
-() N
-(def) K
-( lr_adaptive\(self,epoch\):) p n
-(    lr = learning_rate) N
-(    ) S
-(if) K
-( epoch > 20:) p n
-(        lr = learning_rate/10) N
-(    ) S
-(elif) K
-( epoch > 40:) p n
-(        lr = learning_rate/20) N
-(    ) S
-(return) K
-( lr) p n
-() N
-(# Data Generation) c n
-(class) K
-( Data\(object\):) p n
-(    ) S
-(def) K
-( __init__\(self,r,numclass\): ) p
-(# N is number of training data that will be u) c n
-(sed) N
-(        \(self.xtemp,self.ytemp\),\(self.X_test,self.Y_test\) = cifar10.load_data\(\)) p n
-(        mask = np.full\(self.xtemp.shape[0],True\)) N
-(        mask[np.random.choice\(self.xtemp.shape[0], int\(self.xtemp.shape[0]*\(1-r\)) N
-(\), replace=False\)] = False) N
-(        self.numclass = numclass) N
-(        self.X_train = self.xtemp[mask].astype\(') S
-(float32) str
-('\)) p n
-(        self.Y_train = self.ytemp[mask]) N
-(        self.X_val = self.xtemp[~mask].astype\(') S
-(float32) str
-('\)) p n
-(        self.Y_val = self.ytemp[~mask]) N
-(        self.X_test = self.X_test.astype\(') S
-(float32) str
-('\)) p n
-(        self.Y_test = self.Y_test) N
-(        self.X_train = self.normalize\(self.X_train\)) N
-(        self.X_val = self.normalize\(self.X_val\)) N
-(        self.X_test = self.normalize\(self.X_test\)) N
-(        self.Y_train = one_hot_encoding\(self.Y_train,self.numclass\)) N
-(        self.Y_val = one_hot_encoding\(self.Y_val,self.numclass\)) N
-(        self.Y_test = one_hot_encoding\(self.Y_test,self.numclass\)) N
-() N
-(    ) S
-(def) K
-( normalize\(self,X\):) p n
-(        X /= 255) N
-(        mu = [0.4914,0.4822,0.4465]) N
-(        std = [0.2023,0.1994,0.2010] ) S
-(# These values are from https://github.com/) c n
-border
-grestore
-end % of iso1dict
-pagesave restore
-showpage
-%%Page: (2) 2
-%%BeginPageSetup
-/pagesave save def
-%%EndPageSetup
-iso1dict begin
-gsave
-llx lly 0 add translate
-/v 0 store
-/x0 x v get 4.850123 add sx cw mul add store
-/y0 y v get bfs  sub store
-x0 y0 moveto
-(kuangliu/pytorch-cifar/issues/19) c n
-(        ) p
-(for) K
-( i ) p
-(in) K
-( range\(0,2\):) p n
-(            X[:,:,:,i] = \(X[:,:,:,i]-mu[i]\)/std[i]) N
-(        ) S
-(return) K
-( X) p n
-() N
-(# Model) c n
-(class) K
-( My_Model\(object\):) p n
-(    ) S
-(def) K
-( __init__\(self,data,batch_size,epochs\):) p n
-(        self.data = data) N
-(        self.batch_size = batch_size) N
-(        self.epochs = epochs) N
-() N
-(    ) S
-(def) K
-( convconv\(self,filters,kernel_size,strides\):) p n
-(        ) S
-(return) K
-( Conv2D\(filters,kernel_size,strides =strides,padding=') p
-(same) str
-(',activa) p n
-(tion=') S
-(relu) str
-('\)) p n
-() N
-(    ) S
-(def) K
-( residual_block\(self,input,filter\): ) p
-(#This is from https://arxiv.org/pdf/1) c n
-(603.05027.pdf Identity Mappings in Deep Residual Networks) N
-(        x = BatchNormalization\(\)\(input\)) p n
-(        x = Activation\(') S
-(relu) str
-('\)\(x\)) p n
-(        x = self.convconv\(filter,[3,3],1\)\(x\)) N
-(        x = BatchNormalization\(\)\(input\)) N
-(        x = Activation\(') S
-(relu) str
-('\)\(x\)) p n
-(        x = self.convconv\(filter,[3,3],1\)\(x\)) N
-() N
-(        y = BatchNormalization\(\)\(input\)) N
-(        y = Activation\(') S
-(relu) str
-('\)\(y\)) p n
-(        y = self.convconv\(filter,[3,3],1\)\(y\)) N
-(        y = BatchNormalization\(\)\(y\)) N
-(        y = Activation\(') S
-(relu) str
-('\)\(y\)) p n
-(        y = self.convconv\(filter,[3,3],1\)\(y\)) N
-(        ) S
-(return) K
-( keras.layers.add\([input,x,y]\)) p n
-() N
-(    ) S
-(def) K
-( all_conv_block\(self,filters,dropout,input\):) p n
-(        x = self.convconv\(filters,[3,3],1\)\(input\)) N
-(        x = BatchNormalization\(\)\(x\)) N
-(        x = self.convconv\(filters,[3,3],1\)\(x\)) N
-(        x = BatchNormalization\(\)\(x\)) N
-(        x = MaxPooling2D\(2,strides = 2\)\(x\)) N
-(        x = Dropout\(dropout\)\(x\)) N
-(        ) S
-(return) K
-( x) p n
-() N
-(    ) S
-(def) K
-( build_model\(self\):) p n
-(        input = Input\(shape = self.data.X_train.shape[1:]\)) N
-(        x = self.all_conv_block\(32,0.25,input\)) N
-(        x = self.all_conv_block\(64,0.35,x\)) N
-(        x = self.all_conv_block\(128,0.45,x\)) N
-(        x = self.all_conv_block\(256,0.35,x\)) N
-(#        x = self.convconv\(64,[7,7],2\)\(input\)) c n
-(#        x = MaxPooling2D\(3,strides = 2\)\(x\)) N
-(#        for i in range\(0,2\):) N
-(#            x = self.residual_block\(x,64\)) N
-(#        x = self.convconv\(128,[3,3],2\)\(x\)) N
-(#        for i in range\(0,2\):) N
-(#            x = self.residual_block\(x,128\)) N
-(#        x = self.convconv\(256,[3,3],2\)\(x\)) N
-(#        for i in range\(0,4\):) N
-(#            x = self.residual_block\(x,256\)        ) N
-(#        x = self.convconv\(512,[3,3],2\)\(x\)) N
-(#        for i in range\(0,2\):) N
-(#            x = self.residual_block\(x,512\)) N
-(#        x = keras.layers.GlobalAveragePooling2D\(\)\(x\)) N
-(        x = Flatten\(\)\(x\)) p n
-border
-grestore
-end % of iso1dict
-pagesave restore
-showpage
-%%Page: (3) 3
-%%BeginPageSetup
-/pagesave save def
-%%EndPageSetup
-iso1dict begin
-gsave
-llx lly 0 add translate
-/v 0 store
-/x0 x v get 4.850123 add sx cw mul add store
-/y0 y v get bfs  sub store
-x0 y0 moveto
-(        x = Dense\(1024,activation = ') p
-(relu) str
-('\)\(x\)) p n
-(        y = Dense\(self.data.numclass,activation=') S
-(softmax) str
-('\)\(x\)) p n
-(        self.model = Model\(inputs = input, outputs = y\)) N
-() N
-(    ) S
-(def) K
-( train\(self\):) p n
-(#        self.optim = optimizers.SGD\(learning_rate,momentum=0.9,decay=5e-4\)) c n
-(        self.optim = optimizers.Adam\(learning_rate\)) p n
-(        self.model.compile\(self.optim,') S
-(categorical_crossentropy) str
-(',[') p
-(accuracy) str
-(']\)) p n
-(        self.datagen = keras.preprocessing.image.ImageDataGenerator\() N
-(            horizontal_flip = True,fill_mode = ') S
-(constant) str
-(',) p n
-(            width_shift_range = 4, height_shift_range = 4) N
-(            \)) N
-(        self.datagen.fit\(self.data.X_train\)) N
-(        self.model.fit_generator\(self.datagen.flow\(self.data.X_train, self.data.) N
-(Y_train,batch_size=self.batch_size\),) N
-(            steps_per_epoch=len\(self.data.X_train\)/self.batch_size,epochs=self.e) N
-(pochs,validation_data = \(self.data.X_val,self.data.Y_val\),) N
-(            callbacks=[LearningRateScheduler\(lr_adaptive\)],verbose=2\)) N
-(#       self.model.fit\(self.data.X_train,self.data.Y_train,self.batch_size,self.) c n
-(epochs,validation_data = \(self.data.X_val,self.data.Y_val\),shuffle=True\)) N
-() p n
-(print) K
-(\(') p
-(This is my cifar_10 case) str
-('\)) p n
-(data = Data\(r,numclass\)) N
-(My_Model = My_Model\(data,batch_size,epochs\)) N
-(My_Model.build_model\(\)) N
-(My_Model.train\(\)) N
-(scores = My_Model.model.evaluate\(data.X_test,data.Y_test,verbose=2\)) N
-(print) K
-(\(') p
-(Test loss: ) str
-(', scores[0]\)) p n
-(print) K
-(\(') p
-(Test accuracy:) str
-(',scores[1]\)) p n
-() N
-(# I started with my MNIST model, it didn't work well) c n
-(# I experimented with a deeper version of the MNIST model, and it just lingered ) N
-(at 50%) N
-(# I moved onto residual neural network, https://arxiv.org/pdf/1512.03385.pdf\(Dee) N
-(p Residual Learning for Image Recognition\), with ) N
-(# identity shortcut https://arxiv.org/pdf/1603.05027.pdf \(Identity Mappings in D) N
-(eep Residual Networks\).) N
-(# After 32 epochs, it converges at validation accuracy of 0.6479, and test set a) N
-(ccuracy of 0.9967, with best validation accuracy of 0.6513) N
-(# This model overfits, so I added a simple data augmentation scheme that randoml) N
-(y flips horizontal and vertically.) N
-(# With this augmentation method, I reach a validation accuracy of 0.6821, which ) N
-(is slightly better, but not that good.) N
-(# Then I implemented the augmentation method that is close to the above papers, ) N
-(0.721 and achived with 64 epochs) N
-(# Then I realized that I didn't do normalization on the data, and found values f) N
-(or optimal mean and std online to normalize.) N
-(# The result improved a lot, with epochs 64, now the model reaches 0.8042 valida) N
-(tion error) N
-(# I changed to elu. 0.7898 at 30th, I changed back to relu and added rotation_ra) N
-(nge in the data augmentation, this didn't help) N
-(# I added another branch in residual network. This idea was motivated by https:/) N
-(/arxiv.org/pdf/1705.07485.pdf \(Shake-Shake regularization\)) N
-(# I increased the learning rate from 0.005 to 0.007 because new model was slow. ) N
-(However, this converges to 0.76. I realized my method is just not working out.) N
-(# I heard from someone \(joey\) that all conv layer works fine, and it does work g) N
-(reatly with only 8 total layers. \(I was disappointed\), it goes to 0.8214) N
-(# I realized it learns slowly, so I added adaptive learning rate, and added anot) N
-(her conv_block.) S
+(This is a modified output because the original had all 200 epochs.) p n
+(I decided to show first and every 10th epoch.) N
+(This is my cifar_10 case) N
+(Epoch 1/200) N
+( - 24s - loss: 2.6348 - acc: 0.2571 - val_loss: 2.0944 - val_acc: 0.2887) N
+(Epoch 10/200) N
+( - 20s - loss: 0.7270 - acc: 0.7484 - val_loss: 0.6200 - val_acc: 0.7810) N
+(Epoch 20/200) N
+( - 20s - loss: 0.5163 - acc: 0.8234 - val_loss: 0.4570 - val_acc: 0.8418) N
+(Epoch 30/200) N
+( - 20s - loss: 0.4340 - acc: 0.8513 - val_loss: 0.4037 - val_acc: 0.8638) N
+(Epoch 40/200) N
+( - 20s - loss: 0.3753 - acc: 0.8717 - val_loss: 0.3786 - val_acc: 0.8712) N
+(Epoch 50/200) N
+( - 20s - loss: 0.3382 - acc: 0.8833 - val_loss: 0.3326 - val_acc: 0.8866) N
+(Epoch 60/200) N
+( - 19s - loss: 0.3120 - acc: 0.8918 - val_loss: 0.3309 - val_acc: 0.8906) N
+(Epoch 70/200) N
+( - 19s - loss: 0.2928 - acc: 0.8981 - val_loss: 0.3199 - val_acc: 0.8998) N
+(Epoch 80/200) N
+( - 19s - loss: 0.2770 - acc: 0.9058 - val_loss: 0.3061 - val_acc: 0.8990) N
+(Epoch 90/200) N
+( - 19s - loss: 0.2617 - acc: 0.9100 - val_loss: 0.2890 - val_acc: 0.9090) N
+(Epoch 100/200) N
+( - 19s - loss: 0.2429 - acc: 0.9163 - val_loss: 0.3172 - val_acc: 0.9032) N
+(Epoch 110/200) N
+( - 19s - loss: 0.2328 - acc: 0.9198 - val_loss: 0.3092 - val_acc: 0.9014) N
+(Epoch 120/200) N
+( - 19s - loss: 0.2257 - acc: 0.9214 - val_loss: 0.3021 - val_acc: 0.9076) N
+(Epoch 130/200) N
+( - 19s - loss: 0.2123 - acc: 0.9263 - val_loss: 0.3055 - val_acc: 0.9068) N
+(Epoch 140/200) N
+( - 19s - loss: 0.2098 - acc: 0.9271 - val_loss: 0.2886 - val_acc: 0.9132) N
+(Epoch 150/200) N
+( - 19s - loss: 0.2001 - acc: 0.9314 - val_loss: 0.2978 - val_acc: 0.9140) N
+(Epoch 160/200) N
+( - 19s - loss: 0.1914 - acc: 0.9336 - val_loss: 0.2907 - val_acc: 0.9150) N
+(Epoch 170/200) N
+( - 19s - loss: 0.1928 - acc: 0.9326 - val_loss: 0.3013 - val_acc: 0.9090) N
+(Epoch 180/200) N
+( - 19s - loss: 0.1885 - acc: 0.9340 - val_loss: 0.2818 - val_acc: 0.9114) N
+(Epoch 190/200) N
+( - 19s - loss: 0.1792 - acc: 0.9368 - val_loss: 0.2858 - val_acc: 0.9190) N
+(Epoch 200/200) N
+( - 19s - loss: 0.1730 - acc: 0.9377 - val_loss: 0.3113 - val_acc: 0.9120) N
+(Test loss:  0.35426006702445445) N
+(Test accuracy: 0.9029) N
 border
 grestore
 end % of iso1dict

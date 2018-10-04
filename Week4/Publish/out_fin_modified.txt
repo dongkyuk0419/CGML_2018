@@ -1,0 +1,47 @@
+This is a modified output because the original had all 200 epochs.
+I decided to show first and every 10th epoch.
+This is my cifar_10 case
+Epoch 1/200
+ - 24s - loss: 2.6348 - acc: 0.2571 - val_loss: 2.0944 - val_acc: 0.2887
+Epoch 10/200
+ - 20s - loss: 0.7270 - acc: 0.7484 - val_loss: 0.6200 - val_acc: 0.7810
+Epoch 20/200
+ - 20s - loss: 0.5163 - acc: 0.8234 - val_loss: 0.4570 - val_acc: 0.8418
+Epoch 30/200
+ - 20s - loss: 0.4340 - acc: 0.8513 - val_loss: 0.4037 - val_acc: 0.8638
+Epoch 40/200
+ - 20s - loss: 0.3753 - acc: 0.8717 - val_loss: 0.3786 - val_acc: 0.8712
+Epoch 50/200
+ - 20s - loss: 0.3382 - acc: 0.8833 - val_loss: 0.3326 - val_acc: 0.8866
+Epoch 60/200
+ - 19s - loss: 0.3120 - acc: 0.8918 - val_loss: 0.3309 - val_acc: 0.8906
+Epoch 70/200
+ - 19s - loss: 0.2928 - acc: 0.8981 - val_loss: 0.3199 - val_acc: 0.8998
+Epoch 80/200
+ - 19s - loss: 0.2770 - acc: 0.9058 - val_loss: 0.3061 - val_acc: 0.8990
+Epoch 90/200
+ - 19s - loss: 0.2617 - acc: 0.9100 - val_loss: 0.2890 - val_acc: 0.9090
+Epoch 100/200
+ - 19s - loss: 0.2429 - acc: 0.9163 - val_loss: 0.3172 - val_acc: 0.9032
+Epoch 110/200
+ - 19s - loss: 0.2328 - acc: 0.9198 - val_loss: 0.3092 - val_acc: 0.9014
+Epoch 120/200
+ - 19s - loss: 0.2257 - acc: 0.9214 - val_loss: 0.3021 - val_acc: 0.9076
+Epoch 130/200
+ - 19s - loss: 0.2123 - acc: 0.9263 - val_loss: 0.3055 - val_acc: 0.9068
+Epoch 140/200
+ - 19s - loss: 0.2098 - acc: 0.9271 - val_loss: 0.2886 - val_acc: 0.9132
+Epoch 150/200
+ - 19s - loss: 0.2001 - acc: 0.9314 - val_loss: 0.2978 - val_acc: 0.9140
+Epoch 160/200
+ - 19s - loss: 0.1914 - acc: 0.9336 - val_loss: 0.2907 - val_acc: 0.9150
+Epoch 170/200
+ - 19s - loss: 0.1928 - acc: 0.9326 - val_loss: 0.3013 - val_acc: 0.9090
+Epoch 180/200
+ - 19s - loss: 0.1885 - acc: 0.9340 - val_loss: 0.2818 - val_acc: 0.9114
+Epoch 190/200
+ - 19s - loss: 0.1792 - acc: 0.9368 - val_loss: 0.2858 - val_acc: 0.9190
+Epoch 200/200
+ - 19s - loss: 0.1730 - acc: 0.9377 - val_loss: 0.3113 - val_acc: 0.9120
+Test loss:  0.35426006702445445
+Test accuracy: 0.9029
