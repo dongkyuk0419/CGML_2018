@@ -13,7 +13,8 @@ from keras import optimizers
 from keras.preprocessing.sequence import pad_sequences
 from keras.preprocessing.text import one_hot
 from keras.models import Sequential
-from keras.layers import Embedding, GlobalAveragePooling1D, Dense, BatchNormalization, Conv1D, Dropout, MaxPooling1D
+from keras.layers import Embedding, GlobalAveragePooling1D, Dense
+from keras.layers import BatchNormalization, Conv1D, Dropout, MaxPooling1D
 from keras.callbacks import LearningRateScheduler
 
 # Parameters
@@ -23,6 +24,7 @@ r = 0.95 # Ratio of training data otu of training + validation
 learning_rate = 3e-2
 epochs = 10
 batch_size = 128;
+
 # Useful Functions
 def loaddata(name):
     csv_file = io.StringIO(name.read().decode('ascii'))
@@ -40,7 +42,8 @@ def one_hot_encoding(data,numclass):
 def encode_pad_data(data,num_words):
     out = []
     for i in data:
-        out.append(np.concatenate((one_hot(i[0],num_words),one_hot(i[1],num_words)),axis=None))
+        out.append(np.concatenate((one_hot(i[0],num_words),
+            one_hot(i[1],num_words)),axis=None))
     out = np.array(out)
     out = pad_sequences(out,padding='post')
     return out
@@ -67,7 +70,8 @@ encode_pad_train = encode_pad_data(x_train,num_words)
 encode_pad_test = encode_pad_data(x_test,num_words)
 
 mask = np.full(encode_pad_train.shape[0],True)
-mask[np.random.choice(encode_pad_train.shape[0], int(encode_pad_train.shape[0]*(1-r)), replace=False)] = False
+mask[np.random.choice(encode_pad_train.shape[0],
+    int(encode_pad_train.shape[0]*(1-r)), replace=False)] = False
 encode_pad_val = encode_pad_train[~mask]
 encode_pad_train = encode_pad_train[mask]
 y_val = y_train[~mask]
@@ -83,8 +87,11 @@ model.add(Dense(256,activation='relu'))
 model.add(Dropout(0.6))
 model.add(Dense(num_class,activation='softmax'))
 # model.summary()
-model.compile(optimizer=optimizers.Adam(learning_rate),loss='categorical_crossentropy',metrics=['accuracy'])
-model.fit(encode_pad_train,y_train,epochs=epochs,batch_size=1024,validation_data=(encode_pad_val,y_val),callbacks=[LearningRateScheduler(lr_adaptive)],verbose=2)
+model.compile(optimizer=optimizers.Adam(learning_rate),
+    loss='categorical_crossentropy',metrics=['accuracy'])
+model.fit(encode_pad_train,y_train,epochs=epochs,batch_size=1024,
+    validation_data=(encode_pad_val,y_val),
+    callbacks=[LearningRateScheduler(lr_adaptive)],verbose=2)
 
 scores = model.evaluate(encode_pad_test,y_test,verbose=2)
 print('Test loss: ', scores[0])
