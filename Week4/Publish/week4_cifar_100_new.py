@@ -16,7 +16,7 @@ from keras.layers import BatchNormalization, Activation, Input
 from keras.callbacks import LearningRateScheduler
 
 # Parameters
-r = 0.9 # Ratio of training data otu of training + validation
+r = 0.9
 batch_size = 128
 epochs = 200
 numclass = 100
@@ -37,10 +37,11 @@ def lr_adaptive(self,epoch):
 
 # Data Generation
 class Data(object):
-    def __init__(self,r,numclass): # N is number of training data that will be used
+    def __init__(self,r,numclass):
         (xtemp,ytemp),(self.X_test,self.Y_test) = cifar100.load_data()
         mask = np.full(xtemp.shape[0],True)
-        mask[np.random.choice(xtemp.shape[0],int(xtemp.shape[0]*(1-r)),replace=False)] = False
+        mask[np.random.choice(xtemp.shape[0],
+            int(xtemp.shape[0]*(1-r)),replace=False)] = False
         self.numclass = numclass
         self.X_train = xtemp[mask].astype('float32')
         self.Y_train = ytemp[mask]
@@ -57,7 +58,6 @@ class Data(object):
 
     def normalize(self,X):
         X /= 255
-        # These values are from https://github.com/kuangliu/pytorch-cifar/issues/19
         mu = [0.4914,0.4822,0.4465]
         std = [0.2023,0.1994,0.2010]
         for i in range(0,2):
@@ -71,7 +71,8 @@ class My_Model(object):
         self.epochs = epochs
 
     def convconv(self,filters,kernel_size,strides):
-        return Conv2D(filters,kernel_size,strides =strides,padding='same',activation='relu')
+        return Conv2D(filters,kernel_size,strides =strides,
+            padding='same',activation='relu')
 
     def all_conv_block(self,filters,dropout,input):
         x = self.convconv(filters,[3,3],1)(input)
@@ -95,16 +96,18 @@ class My_Model(object):
 
     def train(self):
         self.optim = optimizers.Adam(learning_rate)
-        self.model.compile(self.optim,
-            'categorical_crossentropy',['accuracy','top_k_categorical_accuracy'])
+        self.model.compile(self.optim,'categorical_crossentropy',
+            ['accuracy','top_k_categorical_accuracy'])
         self.datagen = keras.preprocessing.image.ImageDataGenerator(
             horizontal_flip = True,fill_mode = 'constant',
             width_shift_range = 4, height_shift_range = 4
             )
         self.datagen.fit(self.data.X_train)
-        self.model.fit_generator(self.datagen.flow(self.data.X_train,self.data.Y_train,
-            batch_size=self.batch_size),steps_per_epoch=len(self.data.X_train)/self.batch_size,
-            epochs=self.epochs,validation_data = (self.data.X_val,self.data.Y_val),
+        self.model.fit_generator(self.datagen.flow(self.data.X_train,
+            self.data.Y_train,batch_size=self.batch_size),
+            steps_per_epoch=len(self.data.X_train)/self.batch_size,
+            epochs=self.epochs,
+            validation_data=(self.data.X_val,self.data.Y_val),
             callbacks=[LearningRateScheduler(lr_adaptive)],verbose=2)
 
 
@@ -118,9 +121,12 @@ print('Test loss: ', scores[0])
 print('Test accuracy:',scores[1])
 print('Test top 5 accuracy:',scores[2])
 
-# I stopped and checked this code on cifar-100 when cifar-10 reached 0.8042 validation accuracy.
-# The top5 accuracy for validation is 0.7435 and test accuracy is 0.7465. This is over the minimum
-# requirement. The model was run for 20 epochs. It looks like if I did more epochs I will get a 
-# better accuracy, but instead of running it, I decided to make a better model.
-# I indeed constructed a model that works better with cifar-10. Using the updated model
-# top-5 validation accuracy was 0.8418 and top-5 test accuracy was 0.8374.
+# I omitted all the comments that I already made in the cifar-10.
+# I stopped and checked this code on cifar-100 when cifar-10 reached 0.8042
+# validation accuracy. The top5 accuracy for validation is 0.7435 and test
+# accuracy is 0.7465. This is over the minimum requirement. The model was run
+# for 20 epochs. It looks like if I did more epochs I will get a better
+# accuracy, but instead of running it, I decided to make a better model.
+# I indeed constructed a model that works better with cifar-10.
+# Using the updated model top-5 validation accuracy was 0.8418 and
+# top-5 test accuracy was 0.8374.

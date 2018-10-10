@@ -1,0 +1,70 @@
+This is a modified output because the original had all 200 epochs.
+I decided to show first and every 10th epoch.
+I also added new line after train top_k_categorical_accuracy for aesthetics.
+This is my cifar_100 case
+Epoch 1/200
+ - 23s - loss: 4.5853 - acc: 0.0395 - top_k_categorical_accuracy: 0.1648
+ - val_loss: 4.2882 - val_acc: 0.0566 - val_top_k_categorical_accuracy: 0.2212
+Epoch 10/200
+ - 19s - loss: 2.7005 - acc: 0.3017 - top_k_categorical_accuracy: 0.6256
+ - val_loss: 2.5983 - val_acc: 0.3295 - val_top_k_categorical_accuracy: 0.6479
+Epoch 20/200
+ - 19s - loss: 2.2987 - acc: 0.3890 - top_k_categorical_accuracy: 0.7123 
+ - val_loss: 2.1179 - val_acc: 0.4281 - val_top_k_categorical_accuracy: 0.7544
+Epoch 30/200
+ - 19s - loss: 2.1717 - acc: 0.4196 - top_k_categorical_accuracy: 0.7422 
+ - val_loss: 2.0597 - val_acc: 0.4579 - val_top_k_categorical_accuracy: 0.7620
+Epoch 40/200
+ - 19s - loss: 1.9454 - acc: 0.4700 - top_k_categorical_accuracy: 0.7826 -
+  val_loss: 1.9816 - val_acc: 0.4687 - val_top_k_categorical_accuracy: 0.7816
+Epoch 50/200
+ - 19s - loss: 1.8638 - acc: 0.4876 - top_k_categorical_accuracy: 0.7963 
+ - val_loss: 1.8246 - val_acc: 0.5141 - val_top_k_categorical_accuracy: 0.8162
+Epoch 60/200
+ - 19s - loss: 1.6748 - acc: 0.5325 - top_k_categorical_accuracy: 0.8314 
+ - val_loss: 1.7033 - val_acc: 0.5431 - val_top_k_categorical_accuracy: 0.8296
+Epoch 70/200
+ - 19s - loss: 1.7501 - acc: 0.5127 - top_k_categorical_accuracy: 0.8175 
+ - val_loss: 1.7578 - val_acc: 0.5255 - val_top_k_categorical_accuracy: 0.8194
+Epoch 80/200
+ - 19s - loss: 1.6369 - acc: 0.5421 - top_k_categorical_accuracy: 0.8380 
+ - val_loss: 1.7103 - val_acc: 0.5449 - val_top_k_categorical_accuracy: 0.8276
+Epoch 90/200
+ - 19s - loss: 1.6480 - acc: 0.5398 - top_k_categorical_accuracy: 0.8381 
+ - val_loss: 1.7076 - val_acc: 0.5521 - val_top_k_categorical_accuracy: 0.8286
+Epoch 100/200
+ - 19s - loss: 1.5067 - acc: 0.5706 - top_k_categorical_accuracy: 0.8604 
+ - val_loss: 1.6648 - val_acc: 0.5603 - val_top_k_categorical_accuracy: 0.8390
+Epoch 110/200
+ - 19s - loss: 1.5767 - acc: 0.5562 - top_k_categorical_accuracy: 0.8496 
+ - val_loss: 1.7459 - val_acc: 0.5453 - val_top_k_categorical_accuracy: 0.8298
+Epoch 120/200
+ - 19s - loss: 1.4045 - acc: 0.5976 - top_k_categorical_accuracy: 0.8795 
+ - val_loss: 1.7573 - val_acc: 0.5541 - val_top_k_categorical_accuracy: 0.8338
+Epoch 130/200
+ - 19s - loss: 1.3542 - acc: 0.6087 - top_k_categorical_accuracy: 0.8859 
+ - val_loss: 1.7166 - val_acc: 0.5637 - val_top_k_categorical_accuracy: 0.8412
+Epoch 140/200
+ - 19s - loss: 1.4385 - acc: 0.5940 - top_k_categorical_accuracy: 0.8706 
+ - val_loss: 1.7157 - val_acc: 0.5663 - val_top_k_categorical_accuracy: 0.8306
+Epoch 150/200
+ - 19s - loss: 1.4130 - acc: 0.6006 - top_k_categorical_accuracy: 0.8799 
+ - val_loss: 1.8080 - val_acc: 0.5381 - val_top_k_categorical_accuracy: 0.8194
+Epoch 160/200
+ - 19s - loss: 1.5302 - acc: 0.5681 - top_k_categorical_accuracy: 0.8564 
+ - val_loss: 1.7696 - val_acc: 0.5629 - val_top_k_categorical_accuracy: 0.8374
+Epoch 170/200
+ - 19s - loss: 1.4339 - acc: 0.5958 - top_k_categorical_accuracy: 0.8728 
+ - val_loss: 1.7339 - val_acc: 0.5555 - val_top_k_categorical_accuracy: 0.8326
+Epoch 180/200
+ - 19s - loss: 1.4378 - acc: 0.5932 - top_k_categorical_accuracy: 0.8708 
+ - val_loss: 1.7565 - val_acc: 0.5663 - val_top_k_categorical_accuracy: 0.8372
+Epoch 190/200
+ - 19s - loss: 1.4014 - acc: 0.6106 - top_k_categorical_accuracy: 0.8776 
+ - val_loss: 1.6688 - val_acc: 0.5647 - val_top_k_categorical_accuracy: 0.8304
+Epoch 200/200
+ - 19s - loss: 1.2619 - acc: 0.6379 - top_k_categorical_accuracy: 0.8998 
+ - val_loss: 1.7847 - val_acc: 0.5755 - val_top_k_categorical_accuracy: 0.8418
+Test loss:  1.7742234039306641
+Test accuracy: 0.5744
+Test top 5 accuracy: 0.8374
