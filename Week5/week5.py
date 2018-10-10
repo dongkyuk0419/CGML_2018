@@ -100,4 +100,4 @@ print('Test accuracy:',scores[1])
 # is 92.7%. My final configuration gives results that are in the range of
 # validation accuracy of 88% to 91%.
 # The final test result that I did as I realized I don't have any strong
-# strategy of improving the model further, came out to be %. 
+# strategy of improving the model further, came out to be 89.9%. 
