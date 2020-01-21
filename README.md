@@ -1,2 +1,2 @@
 # CGML_2018
-Computational Graphics - 2018 - Cooper Union
+Computational Graphs - 2018 - Cooper Union
